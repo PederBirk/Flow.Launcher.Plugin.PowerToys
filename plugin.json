@@ -1,0 +1,12 @@
+{
+    "ID": "0930723F-73EA-488A-BEE9-8B8D4845B2F1",
+    "ActionKeyword": "ptoys",
+    "Name": "PowerToys",
+    "Description": "Launches PowerToys tools",
+    "Author": "PederBirk",
+    "Version": "1.0.0",
+    "Language": "csharp",
+    "Website": "https://github.com/PederBirk/Flow.Launcher.Plugin.PowerToys",
+    "IcoPath": "https://cdn.jsdelivr.net/gh/microsoft/PowerToys/src/settings-ui/Settings.UI/Assets/Settings/Icons/PowerToys.png",
+    "ExecuteFileName": "Flow.Launcher.Plugin.PowerToys.dll"
+}
