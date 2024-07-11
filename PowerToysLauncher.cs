@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,35 +41,69 @@ public static class Icons
     public const string EnvironmentVariables = BasePath + "EnvironmentVariables.png";
     public const string CropAndLock = BasePath + "CropAndLock.png";
     public const string RegistryPreview = BasePath + "RegistryPreview.png";
+}
 
+public class PowerToysSettings
+{
+    private JsonNode _settingsJson;
+
+    public void RefreshSettings()
+    {
+        var path = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "Microsoft\\PowerToys\\settings.json");
+        using var file = File.OpenRead(path);
+        _settingsJson = JsonNode.Parse(file)?["enabled"];
+    }
+    
+    public bool IsEnabled(string settingName)
+    {
+        return _settingsJson?[settingName]?.GetValue<bool>() ?? false;
+    }
 }
 
 
 
 public class PowerToysLauncher
 {
-    public static PowerToysAction[] Actions =
+    public IEnumerable<PowerToysAction> EnabledActions => Actions.Where(x => x.Enabled);
+    private PowerToysSettings _settings = new();
+    public void ApplySettings()
+    {
+        _settings.RefreshSettings();
+        foreach (var action in Actions)
+        {
+            action.Enabled = _settings.IsEnabled(action.SettingsEnabledName);
+        }
+    }
+    
+    private static PowerToysAction[] Actions =
     [
         new()
         {
             EventKey = Events.MeasureToolTriggerEvent,
             Keywords = ["measure", "tool", "screen", "ruler"],
             Title = "Screen Ruler",
-            Icon = Icons.ScreenRuler
+            Icon = Icons.ScreenRuler,
+            SettingsLinkName = "MeasureTool",
+            SettingsEnabledNameOverride = "Measure Tool"
         },
         new()
         {
             EventKey = Events.ShortcutGuideTriggerEvent,
             Keywords = ["shortcut", "guide"],
             Title = "Shortcut Guide",
-            Icon = Icons.ShortcutGuide
+            Icon = Icons.ShortcutGuide,
+            SettingsLinkName = "ShortcutGuide",
+            SettingsEnabledNameOverride = "Shortcut Guide"
         },
         new()
         {
             EventKey = Events.ShowColorPickerSharedEvent,
             Keywords = ["color", "colour", "picker"],
             Title = "Show Color Picker",
-            Icon = Icons.ColorPicker
+            Icon = Icons.ColorPicker,
+            SettingsLinkName = "ColorPicker"
         },
         new()
         {
@@ -73,35 +111,41 @@ public class PowerToysLauncher
             Keywords = ["pin", "always", "top"],
             Title = "Pin Always On Top",
             WaitBeforeExecute = true,
-            Icon = Icons.AlwaysOnTop
+            Icon = Icons.AlwaysOnTop,
+            SettingsLinkName = "AlwaysOnTop"
         },
         new()
         {
             EventKey = Events.ShowPowerOcrEvent,
             Keywords = ["ocr", "text", "extract"],
             Title = "Extract Text",
-            Icon = Icons.TextExtractor
+            Icon = Icons.TextExtractor,
+            SettingsLinkName = "PowerOcr",
+            SettingsEnabledNameOverride = "TextExtractor"
         },
         new()
         {
             EventKey = Events.FZEToggleEvent,
             Keywords = ["fancy", "zone"],
             Title = "Fancy Zones Editor",
-            Icon = Icons.FancyZones
+            Icon = Icons.FancyZones,
+            SettingsLinkName = "FacyZones"
         },
         new()
         {
             EventKey = Events.ShowHostsSharedEvent,
             Keywords = ["hosts"],
             Title = "Hosts Editor",
-            Icon = Icons.Hosts
+            Icon = Icons.Hosts,
+            SettingsLinkName = "Hosts"
         },
         new()
         {
             EventKey = Events.RegistryPreviewTriggerEvent,
             Keywords = ["registry", "preview"],
             Title = "Registry Preview",
-            Icon = Icons.RegistryPreview
+            Icon = Icons.RegistryPreview,
+            SettingsLinkName = "RegistryPreview"
         },
         new()
         {
@@ -109,7 +153,8 @@ public class PowerToysLauncher
             Keywords = ["crop", "lock", "reparent"],
             Title = "Crop And Lock - Reparent",
             WaitBeforeExecute = true,
-            Icon = Icons.CropAndLock
+            Icon = Icons.CropAndLock,
+            SettingsLinkName = "CropAndLock"
         },
         new()
         {
@@ -117,22 +162,25 @@ public class PowerToysLauncher
             Keywords = ["crop", "lock", "thumbnail"],
             Title = "Crop And Lock - Thumbnail",
             WaitBeforeExecute = true,
-            Icon = Icons.CropAndLock
+            Icon = Icons.CropAndLock,
+            SettingsLinkName = "CropAndLock"
         },
         new()
         {
             EventKey = Events.ShowAdvancedPasteEvent,
             Keywords = ["advanced", "paste"],
             Title = "Advanced Paste",
-            Icon = Icons.AdvancedPaste
+            Icon = Icons.AdvancedPaste,
+            SettingsLinkName = "AdvancedPaste"
         },
         new()
         {
             EventKey = Events.ShowEnvironmentVariablesSharedEvent,
             Keywords = ["environment", "variable"],
             Title = "Environment Variables",
-            Icon = Icons.EnvironmentVariables
-        }
+            Icon = Icons.EnvironmentVariables,
+            SettingsLinkName = "EnvironmentVariables"
+        },
     ];
 }
 
@@ -141,17 +189,30 @@ public class PowerToysAction
     public required IEnumerable<string> Keywords { get; init; }
     public required string EventKey { get; init; }
     public required string Title { get; init; }
+    public required string SettingsLinkName { get; init; }
+    public string SettingsEnabledNameOverride { get; init; } = "";
+
+    public string SettingsEnabledName =>
+        string.IsNullOrEmpty(SettingsEnabledNameOverride) ? SettingsLinkName : SettingsEnabledNameOverride;
+    
     public string Icon { get; init; } = "";
+    public bool Enabled { get; set; }
 
     public bool WaitBeforeExecute { get; init; } = false;
+
+    public void OpenSettings()
+    {
+        var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PowerToys\\PowerToys.exe");
+        Process.Start(new ProcessStartInfo(appPath) { Arguments = $"--open-settings={SettingsLinkName}" });
+    }
     
-    public void Execute()
+    public virtual void Execute()
     {
         if (WaitBeforeExecute)
         {
             _ = Task.Run(async () =>
             {
-                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                await Task.Delay(TimeSpan.FromSeconds(0.8));
                 ExecuteEventHandle();
             });
             return;

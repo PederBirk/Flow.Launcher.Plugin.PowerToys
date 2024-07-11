@@ -3,22 +3,24 @@ using System.Linq;
 
 namespace Flow.Launcher.Plugin.PowerToys;
 
-public class PowerToys : IPlugin
+public class PowerToys : IPlugin, IContextMenu, IReloadable
 {
     private PluginInitContext _context;
-
+    private PowerToysLauncher _launcher;
     public void Init(PluginInitContext context)
     {
         _context = context;
+        _launcher = new PowerToysLauncher();
+        _launcher.ApplySettings();
     }
-
+    
     public List<Result> Query(Query query)
     {
         if(string.IsNullOrWhiteSpace(query.Search))
         {
-            return PowerToysLauncher.Actions.Select(MapActionToResult).ToList();
+            return _launcher.EnabledActions.Select(MapActionToResult).ToList();
         }
-        var filteredResults = PowerToysLauncher.Actions.Where(x => x.Keywords.Any(y => y.Contains(query.Search.ToLower())));
+        var filteredResults = _launcher.EnabledActions.Where(x => x.Keywords.Any(y => y.Contains(query.Search.ToLower())));
         if(filteredResults.Any())
         {
             return filteredResults.Select(MapActionToResult).ToList();
@@ -32,7 +34,27 @@ public class PowerToys : IPlugin
         {
             Action =  _ =>  { action.Execute(); return true; },
             Title = action.Title,
-            IcoPath = action.Icon
+            IcoPath = action.Icon,
+            ContextData = action
         };
+    }
+
+    public List<Result> LoadContextMenus(Result selectedResult)
+    {
+        var action = (PowerToysAction)selectedResult.ContextData;
+        return
+        [
+            new()
+            {
+                Action = _ => { action.OpenSettings(); return true; },
+                IcoPath = action.Icon,
+                Title = "Open Settings for this utility"
+            }
+        ];
+    }
+
+    public void ReloadData()
+    {
+        _launcher.ApplySettings();
     }
 }
