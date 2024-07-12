@@ -1,20 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Flow.Launcher.Plugin.PowerToys;
 
-public class PowerToys : IPlugin, IContextMenu, IReloadable
+public class PowerToys : IAsyncPlugin, IContextMenu, IAsyncReloadable
 {
     private PluginInitContext _context;
     private PowerToysLauncher _launcher;
-    public void Init(PluginInitContext context)
+    public async Task InitAsync(PluginInitContext context)
     {
         _context = context;
         _launcher = new PowerToysLauncher();
-        _launcher.ApplySettings();
+        await _launcher.ApplySettings();
     }
     
-    public List<Result> Query(Query query)
+    public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
     {
         if(string.IsNullOrWhiteSpace(query.Search))
         {
@@ -28,7 +30,7 @@ public class PowerToys : IPlugin, IContextMenu, IReloadable
         return new List<Result>();
     }
 
-    private static Result MapActionToResult(PowerToysAction action)
+    private static Result MapActionToResult(IAction action)
     {
         return new Result
         {
@@ -41,20 +43,12 @@ public class PowerToys : IPlugin, IContextMenu, IReloadable
 
     public List<Result> LoadContextMenus(Result selectedResult)
     {
-        var action = (PowerToysAction)selectedResult.ContextData;
-        return
-        [
-            new()
-            {
-                Action = _ => { action.OpenSettings(); return true; },
-                IcoPath = action.Icon,
-                Title = "Open Settings for this utility"
-            }
-        ];
+        var action = (IAction)selectedResult.ContextData;
+        return action.GetContextMenuActions().Select(MapActionToResult).ToList();
     }
 
-    public void ReloadData()
+    public async Task ReloadDataAsync()
     {
-        _launcher.ApplySettings();
+        await _launcher.ApplySettings();
     }
 }
