@@ -18,6 +18,10 @@ public class PowerToys : IAsyncPlugin, IContextMenu, IAsyncReloadable
     
     public async Task<List<Result>> QueryAsync(Query query, CancellationToken token)
     {
+        if (!_launcher.IsPowerToysRunning())
+        {
+            return [new Result{Title = "PowerToys is not running", SubTitle = "Make sure PowerToys is installed and running before using this plugin."}];
+        }
         if(string.IsNullOrWhiteSpace(query.Search))
         {
             return _launcher.EnabledActions.Select(MapActionToResult).ToList();

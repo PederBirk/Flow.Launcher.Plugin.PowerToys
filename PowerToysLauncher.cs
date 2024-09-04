@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +47,12 @@ public class PowerToysLauncher
     public async Task ApplySettings()
     {
         await _settings.RefreshSettings();
+    }
+
+    public bool IsPowerToysRunning()
+    {
+        var processes = Process.GetProcessesByName("PowerToys");
+        return processes.Length != 0;
     }
 
     private bool ActionEnabled(IAction action)
