@@ -20,7 +20,7 @@ public static class Events
     public const string ShowEnvironmentVarablesAdminEvent = "Local\\PowerToysEnvironmentVariables-EnvironmentVariablesAdminEvent-8c95d2ad-047c-49a2-9e8b-b4656326cfb2";
     public const string AlwaysOnTopPinEvent = "Local\\AlwaysOnTopPinEvent-892e0aa2-cfa8-4cc4-b196-ddeb32314ce8";
     public const string ShowPowerOcrEvent = "Local\\PowerOCREvent-dc864e06-e1af-4ecc-9078-f98bee745e3a";
-    public const string ShowAdvancedPasteEvent = "Local\\ShowAdvancedPasteEvent-9a46be2a-3e05-4186-b56b-4ae986ef2526";
+    public const string LaunchWorkspacesEditorEvent = "Local\\Workspaces-LaunchEditorEvent-a55ff427-cf62-4994-a2cd-9f72139296bf";
 }
 
 public static class Icons
@@ -39,6 +39,7 @@ public static class Icons
     public const string EnvironmentVariables = BasePath + "EnvironmentVariables.png";
     public const string CropAndLock = BasePath + "CropAndLock.png";
     public const string RegistryPreview = BasePath + "RegistryPreview.png";
+    public const string Workspaces = BasePath + "Workspaces.png";
 }
 public class PowerToysLauncher
 {
@@ -134,6 +135,14 @@ public class PowerToysLauncher
             Icon = Icons.RegistryPreview,
             SettingsLinkName = "RegistryPreview"
         },
+        new PowerToysUtilityActionWithSettings
+        {
+            EventKey = Events.LaunchWorkspacesEditorEvent,
+            Keywords = ["workspaces"],
+            Title = "Workspaces Editor",
+            Icon = Icons.Workspaces,
+            SettingsLinkName = "Workspaces"
+        },
         new DelayedPowerToysUtilityAction
         {
             EventKey = Events.CropAndLockReparentEvent,
@@ -149,14 +158,6 @@ public class PowerToysLauncher
             Title = "Crop And Lock - Thumbnail",
             Icon = Icons.CropAndLock,
             SettingsLinkName = "CropAndLock"
-        },
-        new PowerToysUtilityActionWithSettings
-        {
-            EventKey = Events.ShowAdvancedPasteEvent,
-            Keywords = ["advanced", "paste"],
-            Title = "Advanced Paste",
-            Icon = Icons.AdvancedPaste,
-            SettingsLinkName = "AdvancedPaste"
         },
         new PowerToysUtilityActionWithAsAdmin
         {
