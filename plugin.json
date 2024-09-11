@@ -7,6 +7,6 @@
     "Version": "1.0.0",
     "Language": "csharp",
     "Website": "https://github.com/PederBirk/Flow.Launcher.Plugin.PowerToys",
-    "IcoPath": "https://cdn.jsdelivr.net/gh/microsoft/PowerToys/src/settings-ui/Settings.UI/Assets/Settings/Icons/PowerToys.png",
+    "IcoPath": "images/PowerToys.png",
     "ExecuteFileName": "Flow.Launcher.Plugin.PowerToys.dll"
 }
