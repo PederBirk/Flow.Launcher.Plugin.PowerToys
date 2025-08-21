@@ -60,8 +60,17 @@ public class OpenPowerToysSettingsAction : IAction
     public IEnumerable<string> Keywords { get; init; } = [];
     public void Execute()
     {
-        var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PowerToys\\PowerToys.exe");
-        Process.Start(new ProcessStartInfo(appPath) { Arguments = $"--open-settings={SettingsLinkName}" });
+        var relativePath = "PowerToys\\PowerToys.exe";
+        var appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), relativePath);
+        if (!File.Exists(appPath))
+        {
+            appPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), relativePath);
+        }
+
+        if (File.Exists(appPath))
+        {
+            Process.Start(new ProcessStartInfo(appPath) { Arguments = $"--open-settings={SettingsLinkName}" });
+        }
     }
 }
 
