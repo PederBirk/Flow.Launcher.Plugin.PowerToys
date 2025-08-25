@@ -26,7 +26,9 @@ public class PowerToys : IAsyncPlugin, IContextMenu, IAsyncReloadable, IPluginI1
         {
             return _launcher.EnabledActions.Select(MapActionToResult).ToList();
         }
-        var filteredResults = _launcher.EnabledActions.Where(x => x.Keywords.Any(y => y.Contains(query.Search.ToLower())));
+        // Split search string, segment by spaces (ignore empty string)
+        var searchTerms = query.Search.ToLower().Split([" "], System.StringSplitOptions.RemoveEmptyEntries);
+        var filteredResults = _launcher.EnabledActions.Where(x => searchTerms.All(term => x.Keywords.Any(keyword => keyword.Contains(term))));
         if(filteredResults.Any())
         {
             return filteredResults.Select(MapActionToResult).ToList();
