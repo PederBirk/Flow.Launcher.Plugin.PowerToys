@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+	<system:String x:Key="plugin_name">PowerToys</system:String>
+	<system:String x:Key="plugin_description">啟動 PowerToys 工具集</system:String>
+	<system:String x:Key="powertoys_not_running">PowerToys 未在執行中</system:String>
+	<system:String x:Key="powertoys_not_running_subtitle">確保在使用此外掛前已安裝並運行了 PowerToys。</system:String>
+	<system:String x:Key="open_settings">開啟此實用工具的設定</system:String>
+	<system:String x:Key="run_as_administrator">以系統管理員身分執行</system:String>
+	<system:String x:Key="keywords">關鍵詞</system:String>
+	<system:String x:Key="settings">開啟 PowerToys 設定</system:String>
+	<system:String x:Key="screen_ruler">螢幕尺規</system:String>
+	<system:String x:Key="shortcut_guide">快捷鍵指南</system:String>
+	<system:String x:Key="color_picker">顯示顏色選擇器</system:String>
+	<system:String x:Key="always_on_top">保持視窗始終置頂</system:String>
+	<system:String x:Key="text_extractor">擷取文字</system:String>
+	<system:String x:Key="fancy_zones">FancyZones 編輯器</system:String>
+	<system:String x:Key="hosts_editor">主機檔案編輯器</system:String>
+	<system:String x:Key="registry_preview">登錄預覽</system:String>
+	<system:String x:Key="workspaces">工作區編輯器</system:String>
+	<system:String x:Key="crop_and_lock_reparent">裁剪和鎖定 - 重定父級</system:String>
+	<system:String x:Key="crop_and_lock_thumbnail">裁剪和鎖定 - 縮圖</system:String>
+	<system:String x:Key="environment_variables">環境變數</system:String>
+</ResourceDictionary>

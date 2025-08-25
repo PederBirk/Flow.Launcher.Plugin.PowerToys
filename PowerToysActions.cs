@@ -10,7 +10,7 @@ namespace Flow.Launcher.Plugin.PowerToys;
 
 public interface IAction
 {
-    string Title { get; }
+    string TitleKey { get; }
     IEnumerable<string> Keywords { get; }
     string Icon { get; }
     void Execute();
@@ -21,7 +21,7 @@ public class PowerToysUtilityAction : IAction
 {
     public IEnumerable<string> Keywords { get; init; } = [];
     public required string EventKey { get; init; }
-    public required string Title { get; init; }
+    public required string TitleKey { get; init; }
     
     public string Icon { get; init; } = "";
     public virtual void Execute()
@@ -45,7 +45,7 @@ public class PowerToysUtilityActionWithSettings : PowerToysUtilityAction
     {
         return base.GetContextMenuActions().Concat([
             new OpenPowerToysSettingsAction
-                { Title = "Open Settings for this Utility", Icon = Icon, SettingsLinkName = SettingsLinkName }
+                { TitleKey = "open_settings", Icon = Icon, SettingsLinkName = SettingsLinkName }
         ]);
     }
 }
@@ -53,7 +53,7 @@ public class PowerToysUtilityActionWithSettings : PowerToysUtilityAction
 public class OpenPowerToysSettingsAction : IAction
 {
     public required string SettingsLinkName { get; init; }
-    public required string Title { get; init; }
+    public required string TitleKey { get; init; }
     public string Icon { get; init; } = "";
     public IEnumerable<IAction> GetContextMenuActions() => [];
 
@@ -93,7 +93,7 @@ public class PowerToysUtilityActionWithAsAdmin : PowerToysUtilityActionWithSetti
     public override IEnumerable<IAction> GetContextMenuActions()
     {
         return base.GetContextMenuActions().Concat([
-            new PowerToysUtilityAction { EventKey = RunAsAdminEventKey, Title = "Run as Administrator", Icon = Icon }
+            new PowerToysUtilityAction { EventKey = RunAsAdminEventKey, TitleKey = "run_as_administrator", Icon = Icon }
         ]);
     }
 }
