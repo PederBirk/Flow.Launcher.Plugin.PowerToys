@@ -20,7 +20,7 @@ public class PowerToys : IAsyncPlugin, IContextMenu, IAsyncReloadable, IPluginI1
     {
         if (!_launcher.IsPowerToysRunning())
         {
-            return [new Result{Title = _context.API.GetTranslation("powertoys_not_running"), SubTitle = _context.API.GetTranslation("powertoys_not_running_subtitle") }];
+            return [new Result{Title = GetTranslation("powertoys_not_running"), SubTitle = GetTranslation("powertoys_not_running_subtitle") }];
         }
         if(string.IsNullOrWhiteSpace(query.Search))
         {
