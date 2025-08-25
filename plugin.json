@@ -4,7 +4,7 @@
     "Name": "PowerToys",
     "Description": "Launches PowerToys tools",
     "Author": "PederBirk",
-    "Version": "1.0.0",
+    "Version": "1.1.0",
     "Language": "csharp",
     "Website": "https://github.com/PederBirk/Flow.Launcher.Plugin.PowerToys",
     "IcoPath": "images/PowerToys.png",
