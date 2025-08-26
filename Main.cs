@@ -42,7 +42,7 @@ public class PowerToys : IAsyncPlugin, IContextMenu, IAsyncReloadable, IPluginI1
         {
             Action =  _ =>  { action.Execute(); return true; },
             Title = GetTranslation(action.TitleKey),
-            SubTitle = action.Keywords.Any() ? GetTranslation("keywords") + ": " + string.Join(" ", action.Keywords) : string.Empty,
+            SubTitle = action.Keywords.Any() ? $"{GetTranslation("keywords")}: {string.Join(" ", action.Keywords)}" : string.Empty,
             IcoPath = action.Icon,
             ContextData = action
         };
